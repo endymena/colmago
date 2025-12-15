@@ -1,0 +1,497 @@
+═══════════════════════════════════════════════════════════════════════════════
+  INSTRUCCIONES PASO A PASO - SISTEMA DE PROGRAMA COLMAGO
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 ÍNDICE
+---------
+1. Requisitos del Sistema
+2. Instalación de Python
+3. Instalación de Dependencias
+4. Configuración de Supabase
+5. Creación de Tablas en Supabase
+6. Configuración del Archivo .env
+7. Integración con GitHub
+8. Ejecución de la Aplicación
+9. Uso de la Aplicación
+10. Exportación a PDF
+11. Solución de Problemas Comunes
+
+
+═══════════════════════════════════════════════════════════════════════════════
+1. REQUISITOS DEL SISTEMA
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ Python 3.8 o superior
+✅ Conexión a Internet (para Supabase)
+✅ Cuenta gratuita en Supabase (https://supabase.com)
+✅ Sistema Operativo: Windows, macOS o Linux
+
+
+═══════════════════════════════════════════════════════════════════════════════
+2. INSTALACIÓN DE PYTHON
+═══════════════════════════════════════════════════════════════════════════════
+
+Si no tienes Python instalado:
+
+1. Visita: https://www.python.org/downloads/
+2. Descarga Python 3.8 o superior
+3. Durante la instalación, MARCA la opción "Add Python to PATH"
+4. Verifica la instalación abriendo una terminal y ejecutando:
+   
+   python --version
+   
+   Deberías ver algo como: Python 3.x.x
+
+
+═══════════════════════════════════════════════════════════════════════════════
+3. INSTALACIÓN DE DEPENDENCIAS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Abre una terminal o PowerShell
+
+2. Navega a la carpeta del proyecto:
+   
+   cd "C:\Users\Endy Mena\Desktop\BigData\ColmaGo\proyecto_final_#2"
+
+3. Instala las dependencias ejecutando:
+   
+   pip install -r requirements.txt
+   
+   Esto instalará:
+   - supabase==2.3.4 (Base de datos)
+   - python-dotenv==1.0.0 (Variables de entorno)
+   - reportlab==4.0.7 (Generación de PDFs)
+   - Pillow==10.1.0 (Manejo de imágenes/logo)
+
+4. Espera a que se complete la instalación
+
+
+═══════════════════════════════════════════════════════════════════════════════
+4. CONFIGURACIÓN DE SUPABASE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Crea una cuenta gratuita en: https://supabase.com
+
+2. Crea un nuevo proyecto:
+   - Haz clic en "New Project"
+   - Asigna un nombre (ejemplo: "gestion-negocio")
+   - Crea una contraseña segura para la base de datos
+   - Selecciona una región cercana
+   - Haz clic en "Create new project"
+
+3. Espera a que el proyecto se inicialice (puede tomar 1-2 minutos)
+
+4. Obtén tus credenciales:
+   - En el menú lateral, ve a "Settings" → "API"
+   - Copia el "Project URL" (SUPABASE_URL)
+   - Copia el "anon public" key (SUPABASE_KEY)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+5. CREACIÓN DE TABLAS EN SUPABASE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. En tu proyecto de Supabase, ve a "SQL Editor"
+
+2. Copia y pega el siguiente código SQL:
+
+-- Tabla de Clientes
+CREATE TABLE clientes (
+    id BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    direccion TEXT,
+    fecha_registro DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla de Productos
+CREATE TABLE productos (
+    id BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL CHECK (precio > 0),
+    stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
+    categoria VARCHAR(100),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla de Compras
+CREATE TABLE compras (
+    id BIGSERIAL PRIMARY KEY,
+    proveedor VARCHAR(150) NOT NULL,
+    producto VARCHAR(150) NOT NULL,
+    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+    precio_unitario DECIMAL(10, 2) NOT NULL CHECK (precio_unitario > 0),
+    total DECIMAL(10, 2) NOT NULL,
+    fecha DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla de Ventas
+CREATE TABLE ventas (
+    id BIGSERIAL PRIMARY KEY,
+    cliente VARCHAR(200) NOT NULL,
+    producto VARCHAR(150) NOT NULL,
+    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+    precio_unitario DECIMAL(10, 2) NOT NULL CHECK (precio_unitario > 0),
+    total DECIMAL(10, 2) NOT NULL,
+    fecha DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla de Empleados
+CREATE TABLE empleados (
+    id BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    cargo VARCHAR(100) NOT NULL,
+    salario DECIMAL(10, 2) NOT NULL CHECK (salario > 0),
+    email VARCHAR(150) UNIQUE NOT NULL,
+    fecha_contratacion DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+3. Haz clic en "Run" para ejecutar el código
+
+4. Verifica que las tablas se crearon correctamente en la sección "Table Editor"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+6. CONFIGURACIÓN DEL ARCHIVO .env
+═══════════════════════════════════════════════════════════════════════════════
+
+1. En la carpeta del proyecto, crea un archivo llamado ".env"
+   (sin extensión, solo .env)
+
+2. Abre el archivo .env con un editor de texto
+
+3. Agrega las siguientes líneas, reemplazando con tus credenciales:
+
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_KEY=tu_clave_publica_aqui
+
+4. Guarda el archivo
+
+⚠️ IMPORTANTE: Nunca compartas tu archivo .env con nadie
+
+
+═══════════════════════════════════════════════════════════════════════════════
+7. INTEGRACIÓN CON GITHUB
+═══════════════════════════════════════════════════════════════════════════════
+
+PASO 1: CREAR REPOSITORIO EN GITHUB
+------------------------------------
+1. Ve a https://github.com
+2. Inicia sesión o crea una cuenta
+3. Haz clic en el botón "+" y selecciona "New repository"
+4. Asigna un nombre (ejemplo: "colmago-sistema")
+5. Selecciona "Private" o "Public" según prefieras
+6. NO marques "Initialize this repository with a README"
+7. Haz clic en "Create repository"
+
+
+PASO 2: CONFIGURAR GIT EN TU PROYECTO
+--------------------------------------
+1. Abre una terminal en la carpeta del proyecto
+
+2. Inicializa Git:
+   
+   git init
+
+3. Crea un archivo .gitignore con el siguiente contenido:
+
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Variables de entorno (IMPORTANTE - NO subir credenciales)
+.env
+
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Datos locales
+data_backup/
+reportes/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+4. Agrega todos los archivos:
+   
+   git add .
+
+5. Haz tu primer commit:
+   
+   git commit -m "Initial commit - ColmaGo v1.0"
+
+
+PASO 3: CONECTAR CON GITHUB
+----------------------------
+1. Copia la URL de tu repositorio de GitHub
+   (ejemplo: https://github.com/tu-usuario/colmago-sistema.git)
+
+2. Conecta tu proyecto local con GitHub:
+   
+   git remote add origin https://github.com/tu-usuario/colmago-sistema.git
+
+3. Sube tu código:
+   
+   git branch -M main
+   git push -u origin main
+
+4. Ingresa tus credenciales de GitHub si te las pide
+
+
+PASO 4: ACTUALIZACIONES FUTURAS
+--------------------------------
+Cuando hagas cambios en el código:
+
+1. Guarda los cambios:
+   git add .
+   git commit -m "Descripción de los cambios"
+
+2. Sube a GitHub:
+   git push
+
+
+⚠️ IMPORTANTE SOBRE SUPABASE Y GITHUB
+--------------------------------------
+- NUNCA subas tu archivo .env a GitHub (ya está en .gitignore)
+- Las credenciales de Supabase deben mantenerse privadas
+- Comparte solo el archivo .env.example como plantilla
+
+
+NOTA SOBRE VERCEL
+-----------------
+⚠️ ColmaGo es una aplicación de ESCRITORIO con Tkinter.
+   NO se puede desplegar en Vercel directamente.
+   
+   Vercel es para aplicaciones WEB (HTML/CSS/JavaScript, React, Next.js, etc.)
+   
+   Para usar ColmaGo:
+   - Descarga el código de GitHub
+   - Instala las dependencias
+   - Ejecuta localmente con: python Main.py
+   
+   Si en el futuro deseas crear una versión WEB:
+   - Necesitarías convertir la interfaz de Tkinter a HTML/CSS/JavaScript
+   - Usar un framework web como Flask, Django, o Next.js
+   - Entonces sí podrías desplegarlo en Vercel
+
+
+═══════════════════════════════════════════════════════════════════════════════
+8. EJECUCIÓN DE LA APLICACIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Abre una terminal en la carpeta del proyecto
+
+2. Ejecuta el siguiente comando:
+   
+   python Main.py
+
+3. La aplicación se abrirá mostrando el menú principal
+
+4. Si hay algún error, revisa la sección "Solución de Problemas Comunes"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+9. USO DE LA APLICACIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+MENÚ PRINCIPAL
+--------------
+Desde el menú principal puedes acceder a todos los módulos:
+
+📋 CLIENTES
+  - Agregar nuevos clientes
+  - Editar información de clientes existentes
+  - Eliminar clientes
+  - Ver lista completa de clientes
+  - Validación automática de email y teléfono
+
+📦 PRODUCTOS
+  - Registrar nuevos productos
+  - Actualizar precios y descripciones
+  - Controlar inventario (stock)
+  - Alertas de stock bajo (menos de 10 unidades)
+  - Categorización de productos
+
+🛒 COMPRAS
+  - Registrar compras a proveedores
+  - Seleccionar productos del inventario
+  - Cálculo automático de totales
+  - Actualización automática de stock (+)
+  - Historial de compras
+
+💰 VENTAS
+  - Registrar ventas a clientes
+  - Validación de stock disponible
+  - Reducción automática de stock (-)
+  - Cálculo automático de totales
+  - Historial de ventas
+
+👔 EMPLEADOS
+  - Registrar nuevos empleados
+  - Gestionar información laboral
+  - Controlar salarios
+  - Fechas de contratación
+  - Actualizar cargos
+
+
+OPERACIONES COMUNES
+-------------------
+
+AGREGAR UN REGISTRO:
+1. Completa todos los campos del formulario
+2. Haz clic en "➕ Agregar"
+3. El sistema validará los datos automáticamente
+4. Si todo es correcto, el registro se guardará
+
+EDITAR UN REGISTRO:
+1. Haz clic en el registro en la tabla
+2. Los datos se cargarán en el formulario
+3. Modifica los campos necesarios
+4. Haz clic en "✏️ Actualizar"
+
+ELIMINAR UN REGISTRO:
+1. Selecciona el registro en la tabla
+2. Haz clic en "🗑️ Eliminar"
+3. Confirma la eliminación
+
+LIMPIAR FORMULARIO:
+- Haz clic en "🔄 Limpiar" para vaciar todos los campos
+
+
+═══════════════════════════════════════════════════════════════════════════════
+10. EXPORTACIÓN A PDF
+═══════════════════════════════════════════════════════════════════════════════
+
+GENERAR REPORTES EN PDF
+------------------------
+Todos los módulos incluyen la función de exportar a PDF:
+
+1. Abre cualquier módulo (Clientes, Productos, Compras, Ventas, Empleados)
+
+2. Haz clic en el botón "📄 Exportar PDF" (botón morado)
+
+3. El sistema generará automáticamente:
+   - Un archivo PDF con todos los registros
+   - Nombre único con fecha y hora (ejemplo: clientes_20251205_095530.pdf)
+   - Guardado en la carpeta "reportes/"
+
+4. Se abrirá automáticamente la carpeta de reportes
+
+CARACTERÍSTICAS DE LOS PDFs:
+- Formato profesional A4
+- Tablas formateadas con colores
+- Encabezados personalizados por módulo
+- Fecha y hora de generación
+- Listo para imprimir o compartir
+
+UBICACIÓN DE REPORTES:
+Los PDFs se guardan en: proyecto_final_#2/reportes/
+
+
+═══════════════════════════════════════════════════════════════════════════════
+11. SOLUCIÓN DE PROBLEMAS COMUNES
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "pip no se reconoce como comando"
+SOLUCIÓN: 
+  - Reinstala Python y marca "Add Python to PATH"
+  - O usa: python -m pip install -r requirements.txt
+
+
+PROBLEMA: "No se puede conectar a Supabase"
+SOLUCIÓN:
+  - Verifica que el archivo .env existe y tiene las credenciales correctas
+  - Verifica tu conexión a Internet
+  - Comprueba que el proyecto de Supabase está activo
+  - La aplicación funcionará en modo CSV local como respaldo
+
+
+PROBLEMA: "ModuleNotFoundError: No module named 'supabase'"
+SOLUCIÓN:
+  - Ejecuta: pip install supabase python-dotenv
+
+
+PROBLEMA: "Las tablas no aparecen en Supabase"
+SOLUCIÓN:
+  - Verifica que ejecutaste el código SQL correctamente
+  - Revisa que no haya errores en el SQL Editor
+  - Intenta ejecutar cada tabla por separado
+
+
+PROBLEMA: "Error al insertar datos"
+SOLUCIÓN:
+  - Verifica que todos los campos requeridos estén completos
+  - Revisa que los emails sean únicos
+  - Comprueba que los números sean positivos
+
+
+PROBLEMA: "La ventana no se muestra correctamente"
+SOLUCIÓN:
+  - Verifica que Tkinter esté instalado (viene con Python)
+  - Ajusta la resolución de tu pantalla
+  - Intenta maximizar la ventana
+
+
+MODO OFFLINE (CSV)
+------------------
+Si no puedes conectarte a Supabase, la aplicación automáticamente:
+  - Creará una carpeta "data_backup"
+  - Guardará todos los datos en archivos CSV
+  - Funcionará completamente sin conexión
+  - Los datos se sincronizarán cuando vuelvas a conectarte
+
+
+═══════════════════════════════════════════════════════════════════════════════
+SOPORTE Y CONTACTO
+═══════════════════════════════════════════════════════════════════════════════
+
+Para más ayuda:
+  - Revisa la documentación de Supabase: https://supabase.com/docs
+  - Consulta la documentación de Python: https://docs.python.org
+  - Revisa los comentarios en el código fuente
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ESTRUCTURA DEL PROYECTO
+═══════════════════════════════════════════════════════════════════════════════
+
+proyecto_final_#2/
+├── Main.py                    # Archivo principal - EJECUTAR ESTE
+├── config.py                  # Configuración de la aplicación
+├── database.py                # Conexión a Supabase
+├── requirements.txt           # Dependencias
+├── .env                       # Credenciales (CREAR ESTE)
+├── .env.example              # Plantilla para .env
+├── INSTRUCCIONES.txt         # Este archivo
+├── modules/                   # Módulos de negocio
+│   ├── clientes.py
+│   ├── productos.py
+│   ├── compras.py
+│   ├── ventas.py
+│   └── empleados.py
+└── utils/                     # Utilidades
+    └── validators.py          # Validaciones
+
+
+═══════════════════════════════════════════════════════════════════════════════
+¡LISTO! Tu sistema de gestión está configurado y listo para usar.
+═══════════════════════════════════════════════════════════════════════════════

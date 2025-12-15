@@ -1,0 +1,169 @@
+# Repositorios Necesarios para ColmaGo
+
+## 📦 Dependencias de Python
+
+Todas las dependencias están listadas en `requirements.txt`:
+
+```
+supabase==2.3.4
+python-dotenv==1.0.0
+reportlab==4.0.7
+Pillow==10.1.0
+```
+
+### Instalación
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 🔧 Repositorios y Servicios Externos
+
+### 1. Supabase (Base de Datos)
+- **URL:** https://supabase.com
+- **Propósito:** Base de datos PostgreSQL en la nube
+- **Configuración:** Ver INSTRUCCIONES.txt sección "Configuración de Supabase"
+
+### 2. GitHub (Control de Versiones)
+- **URL:** https://github.com
+- **Propósito:** Almacenar y versionar el código fuente
+- **Repositorio recomendado:** Crear un repositorio privado o público para el proyecto
+
+### 3. Vercel (Opcional - Despliegue Web)
+- **URL:** https://vercel.com
+- **Propósito:** Despliegue de aplicaciones web (si se convierte a web en el futuro)
+- **Nota:** Actualmente ColmaGo es una aplicación de escritorio con Tkinter
+
+---
+
+## 📚 Librerías Incluidas en Python
+
+Estas librerías vienen con Python y no requieren instalación:
+
+- **tkinter** - Interfaz gráfica
+- **os** - Operaciones del sistema
+- **csv** - Manejo de archivos CSV (fallback)
+- **datetime** - Manejo de fechas
+- **re** - Expresiones regulares (validaciones)
+
+---
+
+## 🚀 Pasos para Configurar el Proyecto
+
+### 1. Clonar o Descargar el Proyecto
+
+**Opción A: Desde GitHub**
+```bash
+git clone https://github.com/tu-usuario/colmago.git
+cd colmago
+```
+
+**Opción B: Descarga directa**
+- Descargar el ZIP del proyecto
+- Extraer en la ubicación deseada
+
+### 2. Crear Ambiente Virtual
+
+```bash
+python -m venv .venv
+```
+
+**Activar en Windows:**
+```bash
+.venv\Scripts\Activate.ps1
+```
+
+**Activar en Linux/Mac:**
+```bash
+source .venv/bin/activate
+```
+
+### 3. Instalar Dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configurar Variables de Entorno
+
+1. Copiar `.env.example` a `.env`
+2. Editar `.env` con tus credenciales de Supabase
+
+### 5. Ejecutar la Aplicación
+
+```bash
+python Main.py
+```
+
+---
+
+## 🌐 Integración con GitHub
+
+### Inicializar Repositorio Git
+
+```bash
+git init
+git add .
+git commit -m "Initial commit - ColmaGo v1.0"
+```
+
+### Conectar con GitHub
+
+```bash
+git remote add origin https://github.com/tu-usuario/colmago.git
+git branch -M main
+git push -u origin main
+```
+
+### Archivo .gitignore Recomendado
+
+```
+# Ambiente virtual
+.venv/
+venv/
+
+# Variables de entorno
+.env
+
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Datos locales
+data_backup/
+reportes/
+
+# IDE
+.vscode/
+.idea/
+```
+
+---
+
+## 🔗 Integración con Supabase
+
+Ver `INSTRUCCIONES.txt` para:
+- Crear proyecto en Supabase
+- Ejecutar script SQL para tablas
+- Obtener credenciales
+- Configurar archivo `.env`
+
+---
+
+## 📝 Notas Importantes
+
+1. **Tkinter es de escritorio:** Esta aplicación NO se puede desplegar en Vercel directamente (Vercel es para aplicaciones web)
+2. **Modo Offline:** La aplicación funciona sin Supabase usando archivos CSV locales
+3. **Multiplataforma:** Funciona en Windows, Linux y macOS (con Python 3.8+)
+
+---
+
+## 🆘 Soporte
+
+Para problemas o preguntas:
+1. Revisar `INSTRUCCIONES.txt`
+2. Verificar que todas las dependencias estén instaladas
+3. Confirmar que el archivo `.env` esté configurado correctamente
